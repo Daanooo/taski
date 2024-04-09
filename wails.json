@@ -9,5 +9,6 @@
   "author": {
     "name": "Daanooo",
     "email": "daankraaijeveld@icloud.com"
-  }
+  },
+  "wailsjsdir": "./frontend/src/lib"
 }
