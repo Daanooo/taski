@@ -2,7 +2,10 @@ package main
 
 import (
 	"embed"
+	"log"
 
+	"github.com/Daanooo/taski/internal/controller"
+	"github.com/Daanooo/taski/internal/data"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -14,6 +17,17 @@ var assets embed.FS
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
+
+	db, dberr := data.GetSqlite("data.db")
+	if dberr != nil {
+		log.Fatal(dberr)
+	}
+
+	//Register repositories
+	tasks := data.NewTaskRepository(db)
+
+	// Register controllers
+	tasksController := controller.NewTaskController(tasks)
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -27,6 +41,7 @@ func main() {
 		OnStartup:        app.startup,
 		Bind: []interface{}{
 			app,
+			tasksController,
 		},
 	})
 
