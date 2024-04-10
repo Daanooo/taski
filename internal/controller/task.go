@@ -20,6 +20,10 @@ func (c TaskController) NewTask(description string) {
 	c.repo.Create(task)
 }
 
+func (c TaskController) GetAll() ([]data.Task, error) {
+	return c.repo.GetAll()
+}
+
 func (c TaskController) GetById(id int) data.Task {
 	return c.repo.GetById(id)
 }

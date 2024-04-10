@@ -2,7 +2,6 @@ package main
 
 import (
 	"embed"
-	"log"
 
 	"github.com/Daanooo/taski/internal/controller"
 	"github.com/Daanooo/taski/internal/data"
@@ -20,8 +19,9 @@ func main() {
 
 	db, dberr := data.GetSqlite("data.db")
 	if dberr != nil {
-		log.Fatal(dberr)
+		panic(dberr)
 	}
+	defer db.Close()
 
 	//Register repositories
 	tasks := data.NewTaskRepository(db)

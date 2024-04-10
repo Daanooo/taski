@@ -19,17 +19,42 @@ func NewTaskRepository(db *sql.DB) *TaskRepository {
 	return &TaskRepository{db: db}
 }
 
-func (t TaskRepository) Create(task Task) {
+func (t TaskRepository) Create(task Task) error {
 	stmt, err := t.db.Prepare("insert into tasks (description, completed) values (?, ?)")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer stmt.Close()
 
 	_, err = stmt.Exec(task.Description, task.Completed)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
+}
+
+func (t TaskRepository) GetAll() ([]Task, error) {
+	query := "select * from tasks"
+	var tasks []Task
+
+	rows, err := t.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var task Task
+
+		if err := rows.Scan(&task.ID, &task.Description, &task.Completed); err != nil {
+			return nil, err
+		}
+
+		tasks = append(tasks, task)
+	}
+
+	return tasks, nil
 }
 
 func (t TaskRepository) GetById(id int) Task {
