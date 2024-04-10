@@ -33,24 +33,17 @@ func (t TaskRepository) Create(task Task) {
 }
 
 func (t TaskRepository) GetById(id int) Task {
-	stmt, err := t.db.Prepare("select * from tasks where id = ?")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
+	query := "select * from tasks where id = ?"
+	var task Task
 
-	rows, err := stmt.Query(id)
+	err := t.db.QueryRow(query, id).Scan(&task.ID, &task.Description, &task.Completed)
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	task := &Task{}
-	for rows.Next() {
-		if err := rows.Scan(&task.ID, &task.Description, &task.Completed); err != nil {
+		if err == sql.ErrNoRows {
+			log.Printf("No task found for id %d", id)
+		} else {
 			log.Fatal(err)
 		}
 	}
 
-	return *task
+	return task
 }
