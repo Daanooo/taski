@@ -3,7 +3,7 @@ module github.com/Daanooo/taski
 go 1.22.2
 
 require (
-	github.com/wailsapp/wails/v2 v2.8.0
+	github.com/wailsapp/wails/v2 v2.8.1
 	modernc.org/sqlite v1.29.6
 )
 

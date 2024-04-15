@@ -19,7 +19,7 @@ func main() {
 
 	db, dberr := data.GetSqlite("data.db")
 	if dberr != nil {
-		panic(dberr)
+		fmt.Println("test")
 	}
 	defer db.Close()
 
